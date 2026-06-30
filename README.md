@@ -1,52 +1,33 @@
 # Harmonic Polynomial Fitting for 3D Magnetic Field Reconstruction
 
-This repository implements a harmonic-polynomial (solid spherical harmonic) method for reconstructing three-dimensional magnetic fields from discrete field measurements.
+This repository implements a harmonic-polynomial method for reconstructing three-dimensional magnetic fields from discrete field measurements.
 
-The magnetic field is represented as a linear combination of harmonic-polynomial basis functions. The expansion coefficients, $G_{\ell,m}$, are determined using a least-squares fit to the measured magnetic-field components.
+The magnetic field is represented as a linear combination of harmonic-polynomial basis functions. The best-fit coefficients, **Gₗₘ**, are computed using least-squares fitting.
 
-The basis functions are derived from harmonic scalar potentials that satisfy Laplace's equation,
+The basis functions are derived from harmonic scalar potentials that satisfy Laplace's equation. Therefore, in a source-free region, the reconstructed magnetic field satisfies:
 
-$$
-\nabla^2 \Phi = 0,
-$$
+```text
+div B = 0
+curl B = 0
+```
 
-where the magnetic field is obtained from
-
-$$
-\mathbf{B} = -\nabla\Phi.
-$$
-
-Consequently, the reconstructed magnetic field automatically satisfies the magnetostatic Maxwell equations in a source-free region,
-
-$$
-\nabla \cdot \mathbf{B} = 0,
-$$
-
-and
-
-$$
-\nabla \times \mathbf{B} = 0.
-$$
+This makes the method physically constrained and suitable for magnetic-field reconstruction.
 
 ---
 
 ## Features
 
-- Construct harmonic-polynomial basis functions up to degree `L_MAX`
-- Compute the spherical harmonic coefficients $G_{\ell,m}$ using least-squares fitting
+- Build harmonic-polynomial basis functions up to degree `L_MAX`
+- Compute best-fit **Gₗₘ** coefficients using least-squares fitting
 - Reconstruct the magnetic field from the fitted coefficients
-- Compare reconstructed and measured magnetic fields
-- Compute residual magnetic fields
+- Compare the original and reconstructed magnetic fields
+- Compute residuals using
 
-$$
-\mathbf{B}_{\rm residual}
-=
-\mathbf{B}_{\rm measured}
--
-\mathbf{B}_{\rm reconstructed}
-$$
+```text
+Residual = Truth − Predicted
+```
 
-- Visualize residual distributions using histograms for $B_x$, $B_y$, and $B_z$
+- Plot residual histograms for `bx`, `by`, and `bz`
 
 ---
 
@@ -71,43 +52,40 @@ harmonic_polynomial/
 
 ## Input Data
 
-The analysis expects a magnetic-field dataset with the columns
+The input data should contain the following columns:
 
 ```text
 x, y, z, bx, by, bz
 ```
 
-where
+where:
 
-| Column | Description | Unit |
-|--------|-------------|------|
-| `x`, `y`, `z` | Measurement coordinates | m |
-| `bx`, `by`, `bz` | Magnetic-field components | nT |
+- `x`, `y`, `z` are measurement coordinates in meters
+- `bx`, `by`, `bz` are magnetic-field components in nT
+
+---
+
+## Main Workflow
+
+1. Load magnetic-field measurement data
+2. Construct harmonic-polynomial basis functions
+3. Fit the **Gₗₘ** coefficients using least squares
+4. Reconstruct the magnetic field
+5. Compute residuals between the truth and predicted fields
+6. Plot residual distributions
 
 ---
 
 ## Output
 
-The notebook computes
+The notebook computes:
 
-- harmonic-polynomial coefficients $G_{\ell,m}$
-- reconstructed magnetic field
-- residual magnetic field
-- residual histograms for $B_x$, $B_y$, and $B_z$
+- fitted **Gₗₘ** coefficients
+- reconstructed magnetic-field components
+- residual magnetic-field components
+- residual histograms for `bx`, `by`, and `bz`
 
-These results are used to evaluate the accuracy of the harmonic-polynomial reconstruction.
-
----
-
-## Theory
-
-The harmonic-polynomial expansion provides a physically constrained representation of the magnetic field by enforcing
-
-- Laplace's equation
-- $\nabla\cdot\mathbf{B}=0$
-- $\nabla\times\mathbf{B}=0$
-
-making it well suited for reconstructing magnetic fields in source-free regions.
+These outputs are used to evaluate the accuracy of the harmonic-polynomial reconstruction.
 
 ---
 
@@ -115,5 +93,10 @@ making it well suited for reconstructing magnetic fields in source-free regions.
 
 - NumPy
 - Pandas
-- SymPy
 - Matplotlib
+
+---
+
+## Notes
+
+This repository is intended for research and analysis of magnetic-field reconstruction using harmonic-polynomial basis functions.
